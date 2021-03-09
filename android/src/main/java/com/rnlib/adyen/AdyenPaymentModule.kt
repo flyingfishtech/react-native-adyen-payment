@@ -547,7 +547,7 @@ class AdyenPaymentModule(private var reactContext : ReactApplicationContext) : R
 
                 sendSuccess(message)
             }else if(rsCode == "Refused" || rsCode == "Error"){
-                val err_refusal_code = detailsResponse.getString("refusalReasonCode")
+                val err_refusal_code = detailsResponse.optString("refusalReasonCode", if (rsCode == "Refused") "2" else "0")
                 val err_code = when(err_refusal_code) {
                     "0" -> "ERROR_GENERAL"
                     "2" -> "ERROR_TRANSACTION_REFUSED"
@@ -585,7 +585,7 @@ class AdyenPaymentModule(private var reactContext : ReactApplicationContext) : R
                     "38" -> "ERROR_AUTH_REQUIRED"
                     else -> "ERROR_UNKNOWN"
                 }
-                sendFailure(err_code,detailsResponse.getString("refusalReason"))
+                sendFailure(err_code,detailsResponse.optString("refusalReason", "Refused"))
             }else if(rsCode == "Cancelled"){
                 sendFailure("ERROR_CANCELLED","Transaction Cancelled")
             }else{
