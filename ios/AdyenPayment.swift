@@ -148,7 +148,7 @@ class AdyenPayment: RCTEventEmitter {
             guard appleComponent["apple_pay_merchant_id"] != nil else {return}
             do{
                 let amt = NSDecimalNumber(string: String(format: "%.2f", Float(PaymentsData.amount.value) / 100))
-                let applePaySummaryItems = [PKPaymentSummaryItem(label: "Total", amount: amt, type: .final)]
+                let applePaySummaryItems = [PKPaymentSummaryItem(label: (appleComponent["apple_pay_label"] as? String) ?? "Total", amount: amt, type: .final)]
                 let component = try ApplePayComponent(paymentMethod: paymentMethod,payment:Payment(amount: PaymentsData.amount, countryCode: PaymentsData.countryCode),merchantIdentifier: appleComponent["apple_pay_merchant_id"] as! String,summaryItems: applePaySummaryItems)
                 component.delegate = self
                 self.present(component)
@@ -280,7 +280,7 @@ class AdyenPayment: RCTEventEmitter {
             configuration.applePay.merchantIdentifier = appleComponent["apple_pay_merchant_id"] as? String
             // let amt = NSDecimalNumber(string: String(format: "%.2f", Float((PaymentsData.amount.value) / 100)))
             let amt = NSDecimalNumber(string: String(format: "%.2f", Float(PaymentsData.amount.value) / 100))
-            let applePaySummaryItems = [PKPaymentSummaryItem(label: "Total", amount: amt, type: .final)]
+            let applePaySummaryItems = [PKPaymentSummaryItem(label: (appleComponent["apple_pay_label"] as? String) ?? "Total", amount: amt, type: .final)]
             configuration.applePay.summaryItems = applePaySummaryItems
         }
         DispatchQueue.main.async {
@@ -415,25 +415,26 @@ class AdyenPayment: RCTEventEmitter {
     }
     
     func finish(with response: PaymentsResponse) {
-        let resultCode : PaymentsResponse.ResultCode = response.resultCode!
-        if(resultCode == .authorised || resultCode == .received || resultCode == .pending){
-            let additionalData : NSDictionary = (response.additionalData != nil) ? NSMutableDictionary(dictionary:response.additionalData!) : NSDictionary()
-            print(response)
-            let msg:Dictionary? = ["resultCode" : resultCode.rawValue,"merchantReference":response.merchantReference!,"pspReference" : response.pspReference!,"additionalData" : additionalData]
-            self.sendSuccess(message:msg)
-        }else if(resultCode == .refused || resultCode == .error){
-            self.sendFailure(code : response.error_code ?? "",message: response.refusalReason ?? "")
-        }else if (resultCode == .cancelled){
-            self.sendFailure(code : "ERROR_CANCELLED",message: "Transaction Cancelled")
-        }else{
-            self.sendFailure(code : "ERROR_UNKNOWN",message: "Unknown Error")
-        }
         currentComponent?.stopLoading(withSuccess: true) { [] in
-            (UIApplication.shared.delegate?.window??.rootViewController)!.dismiss(animated: true) {}
-        }
-        redirectComponent = nil
-        threeDS2Component = nil
+            let resultCode : PaymentsResponse.ResultCode = response.resultCode!
+            if(resultCode == .authorised || resultCode == .received || resultCode == .pending){
+                let additionalData : NSDictionary = (response.additionalData != nil) ? NSMutableDictionary(dictionary:response.additionalData!) : NSDictionary()
+                print(response)
+                let msg:Dictionary? = ["resultCode" : resultCode.rawValue,"merchantReference":response.merchantReference!,"pspReference" : response.pspReference!,"additionalData" : additionalData]
+                self.sendSuccess(message:msg)
+            }else if(resultCode == .refused || resultCode == .error){
+                self.sendFailure(code : response.error_code ?? "",message: response.refusalReason ?? "")
+            }else if (resultCode == .cancelled){
+                self.sendFailure(code : "ERROR_CANCELLED",message: "Transaction Cancelled")
+            }else{
+                self.sendFailure(code : "ERROR_UNKNOWN",message: "Unknown Error")
+            }
         
+            (UIApplication.shared.delegate?.window??.rootViewController)!.dismiss(animated: true) {}
+            
+            self.redirectComponent = nil
+            self.threeDS2Component = nil
+        }
     }
     
     func finish(with error: Error) {
