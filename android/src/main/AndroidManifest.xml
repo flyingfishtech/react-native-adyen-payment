@@ -5,7 +5,8 @@
      	<activity
             android:name=".ui.AdyenComponentActivity"
             android:launchMode="singleTask"
-            android:theme="@style/AdyenCheckout.Translucent">
+            android:theme="@style/AdyenCheckout.Translucent"
+            android:exported="false">
         </activity>
         <service
             android:name=".AdyenDropInService"
@@ -13,6 +14,9 @@
         <service
             android:name=".AdyenComponentService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <activity android:name="com.adyen.checkout.dropin.ui.DropInActivity" android:exported="true" />
+        <receiver android:name="com.adyen.threeds2.internal.AppUpgradeBroadcastReceiver" android:exported="false" />
     </application>
 
 </manifest>
