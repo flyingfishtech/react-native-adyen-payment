@@ -44,6 +44,7 @@ class AdyenComponentConfiguration : Configuration, Parcelable {
     val serviceComponentName: ComponentName
     val resultHandlerIntent: Intent
     val amount: Amount
+    var clientKey: String? = null
 
     companion object {
         @JvmField
@@ -59,12 +60,14 @@ class AdyenComponentConfiguration : Configuration, Parcelable {
         availableConfigs: Map<String, Configuration>,
         serviceComponentName: ComponentName,
         resultHandlerIntent: Intent,
-        amount: Amount
-    ) : super(shopperLocale, environment) {
+        amount: Amount,
+        clientKey: String?,
+    ) : super(shopperLocale, environment, clientKey) {
         this.availableConfigs = availableConfigs
         this.serviceComponentName = serviceComponentName
         this.resultHandlerIntent = resultHandlerIntent
         this.amount = amount
+        this.clientKey = clientKey
     }
 
     constructor(parcel: Parcel) : super(parcel) {
@@ -73,6 +76,7 @@ class AdyenComponentConfiguration : Configuration, Parcelable {
         serviceComponentName = parcel.readParcelable(ComponentName::class.java.classLoader)!!
         resultHandlerIntent = parcel.readParcelable(Intent::class.java.classLoader)!!
         amount = Amount.CREATOR.createFromParcel(parcel)
+        clientKey = parcel.readString()
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
@@ -81,13 +85,16 @@ class AdyenComponentConfiguration : Configuration, Parcelable {
         dest.writeParcelable(serviceComponentName, flags)
         dest.writeParcelable(resultHandlerIntent, flags)
         JsonUtils.writeToParcel(dest, Amount.SERIALIZER.serialize(amount))
+        dest.writeString(clientKey)
     }
 
     override fun describeContents(): Int {
         return ParcelUtils.NO_FILE_DESCRIPTOR
     }
 
-    fun <T : Configuration> getConfigurationFor(@PaymentMethodTypes.SupportedPaymentMethod paymentMethod: String, context: Context): T {
+    fun <T : Configuration> getConfigurationFor(paymentMethod: String, context: Context): T {
+        PaymentMethodTypes.SUPPORTED_PAYMENT_METHODS
+
         return if (PaymentMethodTypes.SUPPORTED_PAYMENT_METHODS.contains(paymentMethod) && availableConfigs.containsKey(paymentMethod)) {
             @Suppress("UNCHECKED_CAST")
             availableConfigs[paymentMethod] as T
@@ -112,6 +119,7 @@ class AdyenComponentConfiguration : Configuration, Parcelable {
         private var resultHandlerIntent: Intent
         private var environment: Environment = Environment.EUROPE
         private var amount: Amount = Amount.EMPTY
+        private var clientKey: String? = null;
 
         private val packageName: String
         private val serviceClassName: String
@@ -172,6 +180,11 @@ class AdyenComponentConfiguration : Configuration, Parcelable {
                 throw CheckoutException("Currency is not valid.")
             }
             this.amount = amount
+            return this
+        }
+
+        fun setClientKey(clientKey: String?): Builder {
+            this.clientKey = clientKey;
             return this
         }
 
@@ -297,7 +310,8 @@ class AdyenComponentConfiguration : Configuration, Parcelable {
                     availableConfigs,
                     serviceComponentName,
                     resultHandlerIntent,
-                    amount
+                    amount,
+                    clientKey,
             )
         }
     }

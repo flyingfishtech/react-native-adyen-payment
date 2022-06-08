@@ -67,7 +67,6 @@ class ComponentParsingProvider {
 
 @Suppress("ComplexMethod")
 internal fun <T : Configuration> getDefaultConfigFor(
-    @PaymentMethodTypes.SupportedPaymentMethod
     paymentMethod: String,
     context: Context,
     adyenComponentConfiguration: AdyenComponentConfiguration
@@ -239,7 +238,7 @@ internal fun getComponentFor(
         }
     }
     component.setCreatedForDropIn()
-    return component as PaymentComponent<PaymentComponentState<in PaymentMethodDetails>>
+    return component as PaymentComponent<PaymentComponentState<in PaymentMethodDetails>, >
 }
 
 /**
