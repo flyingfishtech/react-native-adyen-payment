@@ -20,7 +20,7 @@ import com.rnlib.adyen.AdyenComponentConfiguration
 import com.rnlib.adyen.R
 import com.rnlib.adyen.getComponentFor
 
-open abstract class BaseComponentDialogFragment : DropInBottomSheetDialogFragment(), Observer<PaymentComponentState<in PaymentMethodDetails>> {
+abstract class BaseComponentDialogFragment : DropInBottomSheetDialogFragment(), Observer<PaymentComponentState<in PaymentMethodDetails>> {
 
     companion object {
         private val TAG = LogUtil.getTag()

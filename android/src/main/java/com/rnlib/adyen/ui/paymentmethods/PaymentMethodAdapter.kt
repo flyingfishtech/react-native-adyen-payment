@@ -72,7 +72,7 @@ class PaymentMethodAdapter(
                             DateUtils.removeFirstTwoDigitFromYear(paymentMethod.expiryYear))
                     holder.detail.visibility = View.VISIBLE
                 } else {
-                    holder.text.text = paymentMethod?.name
+                    holder.text.text = paymentMethod.name
                     holder.detail.visibility = View.GONE
                 }
 

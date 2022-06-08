@@ -3,19 +3,15 @@ package com.rnlib.adyen.ui.base
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-
 import android.view.KeyEvent
 import android.widget.FrameLayout
 import com.adyen.checkout.base.model.paymentmethods.PaymentMethod
 import com.adyen.checkout.base.model.payments.request.PaymentComponentData
-import com.adyen.checkout.base.model.payments.request.PaymentMethodDetails
-
-import com.rnlib.adyen.R
 import com.adyen.checkout.googlepay.GooglePayConfiguration
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.rnlib.adyen.R
 
 abstract class DropInBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
@@ -40,7 +36,7 @@ abstract class DropInBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        var dialog = super.onCreateDialog(savedInstanceState)
+        val dialog = super.onCreateDialog(savedInstanceState)
 
         dialog.setOnKeyListener { _, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
@@ -49,11 +45,11 @@ abstract class DropInBottomSheetDialogFragment : BottomSheetDialogFragment() {
             false
         }
 
-        dialog.setOnShowListener { dialog ->
-            val bottomSheet = (dialog as BottomSheetDialog)
+        dialog.setOnShowListener {
+            val bottomSheet = (it as BottomSheetDialog)
                     .findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
 
-            var behavior = BottomSheetBehavior.from(bottomSheet)
+            val behavior = BottomSheetBehavior.from(bottomSheet)
 
             if (this.dialogInitViewState == BottomSheetBehavior.STATE_EXPANDED)
                 behavior.skipCollapsed = true
