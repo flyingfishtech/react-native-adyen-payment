@@ -142,7 +142,7 @@ internal fun checkComponentAvailability(
 internal fun getProviderForType(type: String): PaymentComponentProvider<PaymentComponent<*>, Configuration> {
     @Suppress("UNCHECKED_CAST")
     return when (type) {
-        PaymentMethodTypes.IDEAL -> IdealComponent.PROVIDER 
+        PaymentMethodTypes.IDEAL -> IdealComponent.PROVIDER
         PaymentMethodTypes.MOLPAY_THAILAND,
         PaymentMethodTypes.MOLPAY_MALAYSIA,
         PaymentMethodTypes.MOLPAY_VIETNAM -> MolpayComponent.PROVIDER

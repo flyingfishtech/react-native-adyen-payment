@@ -175,7 +175,7 @@ class AdyenComponentActivity : AppCompatActivity(), DropInBottomSheetDialogFragm
         when (paymentMethod.type) {
             PaymentMethodTypes.SCHEME -> {
                 if(adyenComponentViewModel.paymentMethodsApiResponse.getStoredPaymentMethods() != null){
-                   PaymentMethodListDialogFragment.newInstance(false).show(supportFragmentManager, PAYMENT_METHOD_FRAGMENT_TAG) 
+                   PaymentMethodListDialogFragment.newInstance(false).show(supportFragmentManager, PAYMENT_METHOD_FRAGMENT_TAG)
                 }else{
                     this.showComponentDialog(paymentMethod, true)
                 }

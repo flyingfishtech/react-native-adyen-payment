@@ -14,5 +14,5 @@ object ApiService {
             .addConverterFactory(ApiWorker.gsonConverter)
             .client(ApiWorker.client)
             .build()
-            .create(CheckoutApiService::class.java)!!
+            .create(CheckoutApiService::class.java)
 }
